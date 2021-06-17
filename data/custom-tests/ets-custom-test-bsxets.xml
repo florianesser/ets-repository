@@ -3,7 +3,7 @@
   <itemHash>bQ==</itemHash>
   <remoteResource>http://github.com/inspire-eu-validation/ets-repository/metadata/iso</remoteResource>
   <localPath>/auto</localPath>
-  <label>Kopie jo - Metadatenprofil GDI-NW (Basis für alle Ressourcentypen)</label>
+  <label>Custom Test</label>
   <description><![CDATA[Ausgehend von diesen Basisfestlegungen sollen später die spezifischen Profilausprägungen je Ressourcenart (Daten insgesamt, Dienste, Anwendungen) abgeleitet werden. Diese Basis ist daher eine Kopiervorlage zur weiteren Detaillierung/Anpassung.]]></description>
   <reference>../../inspire-md-bsxets.xq</reference>
   <version>1.0.0</version>
