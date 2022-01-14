@@ -32,44 +32,50 @@
     <testObjectType ref="EID5a60dded-0cb0-4977-9b06-16c6c2321d2e"/>
   </supportedTestObjectTypes>
   <testModules>
-    <TestModule id="EID7660ffc6-cbc2-42b5-93ff-1c64fc3d4f53">
-      <label>MD_ApplicationSchemaInformation</label>
+    <TestModule id="EID80829639-2618-42ee-b492-f7983b9800ec">
+      <label>MD_ScopeDescription</label>
       <description><![CDATA[This is a test module]]></description>
       <parent ref="EID5d449875-1b39-4e34-8f59-b4d3c4045b06"/>
       <testCases>
-        <TestCase id="EIDe196e938-8240-46a3-8b06-2bd464510718">
-          <label>ISO-Element Nr. 324: schema­Ascii</label>
-          <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
-          <parent ref="EID7660ffc6-cbc2-42b5-93ff-1c64fc3d4f53"/>
+        <TestCase id="EIDa89cdbb8-e848-4fc5-be2e-37aa113f1c60">
+          <label>ISO-Element Nr. 149: Beschreibung der Bezugsebene</label>
+          <description><![CDATA[Der zulässige Werteumfang ist gegenüber der ISO 19115 eingeschränkt.]]></description>
+          <parent ref="EID80829639-2618-42ee-b492-f7983b9800ec"/>
           <testSteps>
-            <TestStep id="EID2273a573-85b4-4861-a5f5-3560ca98805c">
-              <label>ISO-Element Nr. 324: schema­Ascii</label>
-              <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
-              <parent ref="EIDe196e938-8240-46a3-8b06-2bd464510718"/>
+            <TestStep id="EID9757a58e-6663-4592-b67f-0dc0a0e1e78d">
+              <label>ISO-Element Nr. 149: Beschreibung der Bezugsebene</label>
+              <description><![CDATA[Der zulässige Werteumfang ist gegenüber der ISO 19115 eingeschränkt.]]></description>
+              <parent ref="EIDa89cdbb8-e848-4fc5-be2e-37aa113f1c60"/>
               <statementForExecution>not applicable</statementForExecution>
               <testItemType ref="EIDf483e8e8-06b9-4900-ab36-adad0d7f22f0"/>
               <testAssertions>
-                <TestAssertion id="EID73ace86f-eaa6-4413-b4d7-6570869f5ba5">
+                <TestAssertion id="EIDc2c9a2e0-2a83-403f-94db-a517ca29f9a2">
                   <label>TestAssertion</label>
-                  <description><![CDATA[The property with localName 'schemaAscii' and namespace 'http://www.isotc211.org/2005/gmd' should have a minimum cardinality of 0 and a maximum cardinality of 0]]></description>
-                  <parent ref="EID2273a573-85b4-4861-a5f5-3560ca98805c"/>
+                  <description><![CDATA[The type with localName 'MD_ScopeDescription' and namespace 'http://www.isotc211.org/2005/gmd' must contain one and only one of the following options: <br><ul><li>attributes</li><li>features</li><li>dataset</li><li>other</li></ul>]]></description>
+                  <parent ref="EID9757a58e-6663-4592-b67f-0dc0a0e1e78d"/>
                   <expectedResult>NOT_APPLICABLE</expectedResult>
                   <expression>let $messages :=
   (for $record in $db
-     let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
-     let $typesFound := $record//*[local-name()='MD_ApplicationSchemaInformation' and namespace-uri()='http://www.isotc211.org/2005/gmd']
-     for $typeFound in $typesFound 
-       let $propertyCount := count($typeFound/*[local-name()='schemaAscii' and namespace-uri()='http://www.isotc211.org/2005/gmd']) 
+       let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
+     let $typesFound := $record//*[local-name()='MD_ScopeDescription' and namespace-uri()='http://www.isotc211.org/2005/gmd']
+     for $typeFound in $typesFound
+       let $countElements := count($typeFound/*)
+       let $countChoice0 := count($typeFound/*[local-name()='attributes' and namespace-uri()='http://www.isotc211.org/2005/gmd'])
+       let $countChoice1 := count($typeFound/*[local-name()='features' and namespace-uri()='http://www.isotc211.org/2005/gmd'])
+       let $countChoice2 := count($typeFound/*[local-name()='dataset' and namespace-uri()='http://www.isotc211.org/2005/gmd'])
+       let $countChoice3 := count($typeFound/*[local-name()='other' and namespace-uri()='http://www.isotc211.org/2005/gmd'])
        return
-       if (($propertyCount lt 0) or ($propertyCount gt 0)) then
-        local:addMessage('TR.invalidPropertyCardinalityError', map { 'localName': 'MD_ApplicationSchemaInformation', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'invalidCardinality': $propertyCount })
+       if ($countElements gt 1) then
+         local:addMessage('TR.moreThanOneOptionError', map { 'localName': 'MD_ScopeDescription', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record) })
+       else if (($countChoice0 + $countChoice1 + $countChoice2 + $countChoice3) lt 1) then 
+         local:addMessage('TR.noValidOptionError', map { 'localName': 'MD_ScopeDescription', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record) })
        else ()
   )[position() le $limitErrors]
 return
 (if ($messages) then 'FAILED' else 'PASSED',
  local:error-statistics('TR.recordsWithErrors', count(fn:distinct-values($messages//etf:argument[@token='id']/text()))),
  $messages)</expression>
-                  <testItemType ref="EIDb48eeaa3-6a74-414a-879c-1dc708017e11"/>
+                  <testItemType ref="EIDf0edc596-49d2-48d6-a1a1-1ac581dcde0a"/>
                   <translationTemplates>
                     <translationTemplate ref="TR.recordsWithErrors"/>
                     <translationTemplate ref="TR.missingTypeContentError"/>
@@ -82,129 +88,88 @@ return
             </TestStep>
           </testSteps>
         </TestCase>
-        <TestCase id="EID279c21d5-5558-4f2e-bbed-4057f8484798">
-          <label>ISO-Element Nr. 325: graphics­File</label>
-          <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
-          <parent ref="EID7660ffc6-cbc2-42b5-93ff-1c64fc3d4f53"/>
+        <TestCase id="EID1bf9a69b-1c1b-4eee-8164-277dc3ce3ec8">
+          <label>ISO-Element Nr. 149: Beschreibung des Geltungsbereichs</label>
+          <description><![CDATA[bedingtes Pflichtelement in MD_ScopeDescription: eines der Elemente attributes, features, dataset oder distance muss belegt sein.]]></description>
+          <parent ref="EID80829639-2618-42ee-b492-f7983b9800ec"/>
           <testSteps>
-            <TestStep id="EID1af45200-7984-402a-9414-e2c2ced5ab1e">
-              <label>ISO-Element Nr. 325: graphics­File</label>
-              <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
-              <parent ref="EID279c21d5-5558-4f2e-bbed-4057f8484798"/>
+            <TestStep id="EIDe0b6f5d7-4e87-468d-bca1-772172b4c523">
+              <label>ISO-Element Nr. 149: Beschreibung des Geltungsbereichs</label>
+              <description><![CDATA[bedingtes Pflichtelement in MD_ScopeDescription: eines der Elemente attributes, features, dataset oder distance muss belegt sein.]]></description>
+              <parent ref="EID1bf9a69b-1c1b-4eee-8164-277dc3ce3ec8"/>
               <statementForExecution>not applicable</statementForExecution>
               <testItemType ref="EIDf483e8e8-06b9-4900-ab36-adad0d7f22f0"/>
               <testAssertions>
-                <TestAssertion id="EID4acd4205-ef49-4d76-94d8-435b6e8aaca3">
-                  <label>TestAssertion</label>
-                  <description><![CDATA[The property with localName 'graphicsFile' and namespace 'http://www.isotc211.org/2005/gmd' should have a minimum cardinality of 0 and a maximum cardinality of 0]]></description>
-                  <parent ref="EID1af45200-7984-402a-9414-e2c2ced5ab1e"/>
+                <TestAssertion id="EIDec6d0bae-85fa-45a7-8b4d-474e2ce5947c">
+                  <label>ISO-Element Nr. 149: Beschreibung des Geltungsbereichs</label>
+                  <description><![CDATA[bedingtes Pflichtelement in MD_ScopeDescription: eines der Elemente attributes, features, dataset oder distance muss belegt sein.]]></description>
+                  <parent ref="EIDe0b6f5d7-4e87-468d-bca1-772172b4c523"/>
                   <expectedResult>NOT_APPLICABLE</expectedResult>
-                  <expression>let $messages :=
-  (for $record in $db
-     let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
-     let $typesFound := $record//*[local-name()='MD_ApplicationSchemaInformation' and namespace-uri()='http://www.isotc211.org/2005/gmd']
-     for $typeFound in $typesFound 
-       let $propertyCount := count($typeFound/*[local-name()='graphicsFile' and namespace-uri()='http://www.isotc211.org/2005/gmd']) 
-       return
-       if (($propertyCount lt 0) or ($propertyCount gt 0)) then
-        local:addMessage('TR.invalidPropertyCardinalityError', map { 'localName': 'MD_ApplicationSchemaInformation', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'invalidCardinality': $propertyCount })
+                  <expression>
+let $messages0 :=
+    (for $record in $db
+       let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
+       let $typesFound := $record//*[local-name()='MD_Metadata' and namespace-uri()='http://www.isotc211.org/2005/gmd']
+       for $typeFound in $typesFound 
+         let $ifPropertyCount := count($typeFound/*[local-name()='dataQualityInfo' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_DataQuality' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_Scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='levelDescription' and namespace-uri()='http://www.isotc211.org/2005/gmd'])
+       let $thenPropertyCount := count($typeFound/*[local-name()='dataQualityInfo' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_DataQuality' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_Scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='levelDescription' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='MD_ScopeDescription' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='attributes' and namespace-uri()='http://www.isotc211.org/2005/gmd'])
+         return 
+       if ($ifPropertyCount gt 0) then 
+         if ($thenPropertyCount eq 0) then 
+           local:addMessage('TR.conditionNotExistingValue', map { 'localName': 'attributes', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record) })
+         else ()
        else ()
-  )[position() le $limitErrors]
+    )[position() le $limitErrors]
+let $messages1 :=
+    (for $record in $db
+       let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
+       let $typesFound := $record//*[local-name()='MD_Metadata' and namespace-uri()='http://www.isotc211.org/2005/gmd']
+       for $typeFound in $typesFound 
+         let $ifPropertyCount := count($typeFound/*[local-name()='dataQualityInfo' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_DataQuality' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_Scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='levelDescription' and namespace-uri()='http://www.isotc211.org/2005/gmd'])
+       let $thenPropertyCount := count($typeFound/*[local-name()='dataQualityInfo' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_DataQuality' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_Scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='levelDescription' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='MD_ScopeDescription' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='features' and namespace-uri()='http://www.isotc211.org/2005/gmd'])
+         return 
+       if ($ifPropertyCount gt 0) then 
+         if ($thenPropertyCount eq 0) then 
+           local:addMessage('TR.conditionNotExistingValue', map { 'localName': 'features', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record) })
+         else ()
+       else ()
+    )[position() le $limitErrors]
+let $messages2 :=
+    (for $record in $db
+       let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
+       let $typesFound := $record//*[local-name()='MD_Metadata' and namespace-uri()='http://www.isotc211.org/2005/gmd']
+       for $typeFound in $typesFound 
+         let $ifPropertyCount := count($typeFound/*[local-name()='dataQualityInfo' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_DataQuality' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_Scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='levelDescription' and namespace-uri()='http://www.isotc211.org/2005/gmd'])
+       let $thenPropertyCount := count($typeFound/*[local-name()='dataQualityInfo' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_DataQuality' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_Scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='levelDescription' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='MD_ScopeDescription' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='dataset' and namespace-uri()='http://www.isotc211.org/2005/gmd'])
+         return 
+       if ($ifPropertyCount gt 0) then 
+         if ($thenPropertyCount eq 0) then 
+           local:addMessage('TR.conditionNotExistingValue', map { 'localName': 'dataset', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record) })
+         else ()
+       else ()
+    )[position() le $limitErrors]
+let $messages3 :=
+    (for $record in $db
+       let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
+       let $typesFound := $record//*[local-name()='MD_Metadata' and namespace-uri()='http://www.isotc211.org/2005/gmd']
+       for $typeFound in $typesFound 
+         let $ifPropertyCount := count($typeFound/*[local-name()='dataQualityInfo' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_DataQuality' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_Scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='levelDescription' and namespace-uri()='http://www.isotc211.org/2005/gmd'])
+       let $thenPropertyCount := count($typeFound/*[local-name()='dataQualityInfo' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_DataQuality' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='DQ_Scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='levelDescription' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='MD_ScopeDescription' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*[local-name()='other' and namespace-uri()='http://www.isotc211.org/2005/gmd'])
+         return 
+       if ($ifPropertyCount gt 0) then 
+         if ($thenPropertyCount eq 0) then 
+           local:addMessage('TR.conditionNotExistingValue', map { 'localName': 'other', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record) })
+         else ()
+       else ()
+    )[position() le $limitErrors]
+ let $messages := 
+   if ((count($messages0) eq 0) or (count($messages1) eq 0) or (count($messages2) eq 0) or (count($messages3) eq 0)) then ()
+   else ($messages0, $messages1, $messages2, $messages3)
 return
 (if ($messages) then 'FAILED' else 'PASSED',
  local:error-statistics('TR.recordsWithErrors', count(fn:distinct-values($messages//etf:argument[@token='id']/text()))),
  $messages)</expression>
-                  <testItemType ref="EIDb48eeaa3-6a74-414a-879c-1dc708017e11"/>
-                  <translationTemplates>
-                    <translationTemplate ref="TR.recordsWithErrors"/>
-                    <translationTemplate ref="TR.missingTypeContentError"/>
-                    <translationTemplate ref="TR.missingMandatoryTypeError"/>
-                    <translationTemplate ref="TR.invalidPropertyCardinalityError"/>
-                    <translationTemplate ref="TR.invalidPropertyValueError"/>
-                  </translationTemplates>
-                </TestAssertion>
-              </testAssertions>
-            </TestStep>
-          </testSteps>
-        </TestCase>
-        <TestCase id="EIDb78b4c23-37e0-41c5-8d6d-9d0331003ad6">
-          <label>ISO-Element Nr. 326: software­Development­File</label>
-          <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
-          <parent ref="EID7660ffc6-cbc2-42b5-93ff-1c64fc3d4f53"/>
-          <testSteps>
-            <TestStep id="EID4a48de36-cae2-4ef8-a051-615f2b51672e">
-              <label>ISO-Element Nr. 326: software­Development­File</label>
-              <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
-              <parent ref="EIDb78b4c23-37e0-41c5-8d6d-9d0331003ad6"/>
-              <statementForExecution>not applicable</statementForExecution>
-              <testItemType ref="EIDf483e8e8-06b9-4900-ab36-adad0d7f22f0"/>
-              <testAssertions>
-                <TestAssertion id="EID2e2a22d3-b8e2-4986-a666-76c45e0f5d48">
-                  <label>TestAssertion</label>
-                  <description><![CDATA[The property with localName 'softwareDevelopmentFile' and namespace 'http://www.isotc211.org/2005/gmd' should have a minimum cardinality of 0 and a maximum cardinality of 0]]></description>
-                  <parent ref="EID4a48de36-cae2-4ef8-a051-615f2b51672e"/>
-                  <expectedResult>NOT_APPLICABLE</expectedResult>
-                  <expression>let $messages :=
-  (for $record in $db
-     let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
-     let $typesFound := $record//*[local-name()='MD_ApplicationSchemaInformation' and namespace-uri()='http://www.isotc211.org/2005/gmd']
-     for $typeFound in $typesFound 
-       let $propertyCount := count($typeFound/*[local-name()='softwareDevelopmentFile' and namespace-uri()='http://www.isotc211.org/2005/gmd']) 
-       return
-       if (($propertyCount lt 0) or ($propertyCount gt 0)) then
-        local:addMessage('TR.invalidPropertyCardinalityError', map { 'localName': 'MD_ApplicationSchemaInformation', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'invalidCardinality': $propertyCount })
-       else ()
-  )[position() le $limitErrors]
-return
-(if ($messages) then 'FAILED' else 'PASSED',
- local:error-statistics('TR.recordsWithErrors', count(fn:distinct-values($messages//etf:argument[@token='id']/text()))),
- $messages)</expression>
-                  <testItemType ref="EIDb48eeaa3-6a74-414a-879c-1dc708017e11"/>
-                  <translationTemplates>
-                    <translationTemplate ref="TR.recordsWithErrors"/>
-                    <translationTemplate ref="TR.missingTypeContentError"/>
-                    <translationTemplate ref="TR.missingMandatoryTypeError"/>
-                    <translationTemplate ref="TR.invalidPropertyCardinalityError"/>
-                    <translationTemplate ref="TR.invalidPropertyValueError"/>
-                  </translationTemplates>
-                </TestAssertion>
-              </testAssertions>
-            </TestStep>
-          </testSteps>
-        </TestCase>
-        <TestCase id="EID206e3a89-29d7-42e8-9228-afa9ee3b6701">
-          <label>ISO-Element Nr. 327: software­Development­File­Format</label>
-          <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
-          <parent ref="EID7660ffc6-cbc2-42b5-93ff-1c64fc3d4f53"/>
-          <testSteps>
-            <TestStep id="EID1c3e7201-6e81-4ce4-8690-4bfe7a01db3c">
-              <label>ISO-Element Nr. 327: software­Development­File­Format</label>
-              <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
-              <parent ref="EID206e3a89-29d7-42e8-9228-afa9ee3b6701"/>
-              <statementForExecution>not applicable</statementForExecution>
-              <testItemType ref="EIDf483e8e8-06b9-4900-ab36-adad0d7f22f0"/>
-              <testAssertions>
-                <TestAssertion id="EID3def25a2-4bcb-4daf-bf6a-b154a3f86cd3">
-                  <label>TestAssertion</label>
-                  <description><![CDATA[The property with localName 'softwareDevelopmentFileFormat' and namespace 'http://www.isotc211.org/2005/gmd' should have a minimum cardinality of 0 and a maximum cardinality of 0]]></description>
-                  <parent ref="EID1c3e7201-6e81-4ce4-8690-4bfe7a01db3c"/>
-                  <expectedResult>NOT_APPLICABLE</expectedResult>
-                  <expression>let $messages :=
-  (for $record in $db
-     let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
-     let $typesFound := $record//*[local-name()='MD_ApplicationSchemaInformation' and namespace-uri()='http://www.isotc211.org/2005/gmd']
-     for $typeFound in $typesFound 
-       let $propertyCount := count($typeFound/*[local-name()='softwareDevelopmentFileFormat' and namespace-uri()='http://www.isotc211.org/2005/gmd']) 
-       return
-       if (($propertyCount lt 0) or ($propertyCount gt 0)) then
-        local:addMessage('TR.invalidPropertyCardinalityError', map { 'localName': 'MD_ApplicationSchemaInformation', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'invalidCardinality': $propertyCount })
-       else ()
-  )[position() le $limitErrors]
-return
-(if ($messages) then 'FAILED' else 'PASSED',
- local:error-statistics('TR.recordsWithErrors', count(fn:distinct-values($messages//etf:argument[@token='id']/text()))),
- $messages)</expression>
-                  <testItemType ref="EIDb48eeaa3-6a74-414a-879c-1dc708017e11"/>
+                  <testItemType ref="EIDf0edc596-49d2-48d6-a1a1-1ac581dcde0a"/>
                   <translationTemplates>
                     <translationTemplate ref="TR.recordsWithErrors"/>
                     <translationTemplate ref="TR.missingTypeContentError"/>
@@ -219,187 +184,38 @@ return
         </TestCase>
       </testCases>
     </TestModule>
-    <TestModule id="EIDd96f0df0-ffec-4376-81f5-3041b468bb7b">
-      <label>MD_Identifier</label>
+    <TestModule id="EID3820e845-24ed-49ce-9104-4fa4e6c8b3fe">
+      <label>MD_SecurityConstraints</label>
       <description><![CDATA[This is a test module]]></description>
       <parent ref="EID5d449875-1b39-4e34-8f59-b4d3c4045b06"/>
       <testCases>
-        <TestCase id="EID40c16dbf-e4be-4055-9621-305f95e27470">
-          <label>ISO-Element Nr. 206: authority</label>
-          <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
-          <parent ref="EIDd96f0df0-ffec-4376-81f5-3041b468bb7b"/>
+        <TestCase id="EIDa4692c06-be09-4347-a22d-5f8de7992609">
+          <label>ISO-Element Nr. 74: Sicherheitseinstufung</label>
+          <description><![CDATA[Pflichtelement in Angaben zu Sicherheitseinschränkungen: die Sicherheitseinstufung muss vorhanden sein.]]></description>
+          <parent ref="EID3820e845-24ed-49ce-9104-4fa4e6c8b3fe"/>
           <testSteps>
-            <TestStep id="EIDb7311126-3184-4dae-a783-6cff0fe81a23">
-              <label>ISO-Element Nr. 206: authority</label>
-              <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
-              <parent ref="EID40c16dbf-e4be-4055-9621-305f95e27470"/>
+            <TestStep id="EIDbe7ba296-5312-4bd9-a448-4d7d8141b354">
+              <label>ISO-Element Nr. 74: Sicherheitseinstufung</label>
+              <description><![CDATA[Pflichtelement in Angaben zu Sicherheitseinschränkungen: die Sicherheitseinstufung muss vorhanden sein.]]></description>
+              <parent ref="EIDa4692c06-be09-4347-a22d-5f8de7992609"/>
               <statementForExecution>not applicable</statementForExecution>
               <testItemType ref="EIDf483e8e8-06b9-4900-ab36-adad0d7f22f0"/>
               <testAssertions>
-                <TestAssertion id="EIDb7bb2c3e-5629-4447-85bd-fd991cf1bb38">
+                <TestAssertion id="EID67990b0b-5ddd-4bd6-9eac-7faddc22956e">
                   <label>TestAssertion</label>
-                  <description><![CDATA[The property with localName 'authority' and namespace 'http://www.isotc211.org/2005/gmd' should have a minimum cardinality of 0 and a maximum cardinality of 0]]></description>
-                  <parent ref="EIDb7311126-3184-4dae-a783-6cff0fe81a23"/>
+                  <description><![CDATA[The property with localName 'classification' and namespace 'http://www.isotc211.org/2005/gmd' should have a value that corresponds to one from the following list: <br><ul><li>restricted</li><li>unclassified</li><li>confidential</li><li>secret</li><li>topSecret</li></ul>]]></description>
+                  <parent ref="EIDbe7ba296-5312-4bd9-a448-4d7d8141b354"/>
                   <expectedResult>NOT_APPLICABLE</expectedResult>
-                  <expression>let $messages :=
-  (for $record in $db
-     let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
-     let $typesFound := $record//*[local-name()='MD_Identifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']
-     for $typeFound in $typesFound 
-       let $propertyCount := count($typeFound/*[local-name()='authority' and namespace-uri()='http://www.isotc211.org/2005/gmd']) 
-       return
-       if (($propertyCount lt 0) or ($propertyCount gt 0)) then
-        local:addMessage('TR.invalidPropertyCardinalityError', map { 'localName': 'MD_Identifier', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'invalidCardinality': $propertyCount })
-       else ()
-  )[position() le $limitErrors]
-return
-(if ($messages) then 'FAILED' else 'PASSED',
- local:error-statistics('TR.recordsWithErrors', count(fn:distinct-values($messages//etf:argument[@token='id']/text()))),
- $messages)</expression>
-                  <testItemType ref="EIDb48eeaa3-6a74-414a-879c-1dc708017e11"/>
-                  <translationTemplates>
-                    <translationTemplate ref="TR.recordsWithErrors"/>
-                    <translationTemplate ref="TR.missingTypeContentError"/>
-                    <translationTemplate ref="TR.missingMandatoryTypeError"/>
-                    <translationTemplate ref="TR.invalidPropertyCardinalityError"/>
-                    <translationTemplate ref="TR.invalidPropertyValueError"/>
-                  </translationTemplates>
-                </TestAssertion>
-              </testAssertions>
-            </TestStep>
-          </testSteps>
-        </TestCase>
-      </testCases>
-    </TestModule>
-    <TestModule id="EIDc473dff3-34cd-457e-9f8a-40dfb5855926">
-      <label>MD_Format</label>
-      <description><![CDATA[This is a test module]]></description>
-      <parent ref="EID5d449875-1b39-4e34-8f59-b4d3c4045b06"/>
-      <testCases>
-        <TestCase id="EIDce5f9f66-51a8-49b8-9c97-4c348683ad37">
-          <label>ISO-Element Nr. 287: amendment­Number</label>
-          <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
-          <parent ref="EIDc473dff3-34cd-457e-9f8a-40dfb5855926"/>
-          <testSteps>
-            <TestStep id="EIDf12251ca-e3b9-4144-bd86-69a84133a611">
-              <label>ISO-Element Nr. 287: amendment­Number</label>
-              <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
-              <parent ref="EIDce5f9f66-51a8-49b8-9c97-4c348683ad37"/>
-              <statementForExecution>not applicable</statementForExecution>
-              <testItemType ref="EIDf483e8e8-06b9-4900-ab36-adad0d7f22f0"/>
-              <testAssertions>
-                <TestAssertion id="EIDdad93a01-4634-4da1-8032-ec5cc8169f33">
-                  <label>TestAssertion</label>
-                  <description><![CDATA[The property with localName 'amendmentNumber' and namespace 'http://www.isotc211.org/2005/gmd' should have a minimum cardinality of 0 and a maximum cardinality of 0]]></description>
-                  <parent ref="EIDf12251ca-e3b9-4144-bd86-69a84133a611"/>
-                  <expectedResult>NOT_APPLICABLE</expectedResult>
-                  <expression>let $messages :=
-  (for $record in $db
-     let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
-     let $typesFound := $record//*[local-name()='MD_Format' and namespace-uri()='http://www.isotc211.org/2005/gmd']
-     for $typeFound in $typesFound 
-       let $propertyCount := count($typeFound/*[local-name()='amendmentNumber' and namespace-uri()='http://www.isotc211.org/2005/gmd']) 
-       return
-       if (($propertyCount lt 0) or ($propertyCount gt 0)) then
-        local:addMessage('TR.invalidPropertyCardinalityError', map { 'localName': 'MD_Format', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'invalidCardinality': $propertyCount })
-       else ()
-  )[position() le $limitErrors]
-return
-(if ($messages) then 'FAILED' else 'PASSED',
- local:error-statistics('TR.recordsWithErrors', count(fn:distinct-values($messages//etf:argument[@token='id']/text()))),
- $messages)</expression>
-                  <testItemType ref="EIDb48eeaa3-6a74-414a-879c-1dc708017e11"/>
-                  <translationTemplates>
-                    <translationTemplate ref="TR.recordsWithErrors"/>
-                    <translationTemplate ref="TR.missingTypeContentError"/>
-                    <translationTemplate ref="TR.missingMandatoryTypeError"/>
-                    <translationTemplate ref="TR.invalidPropertyCardinalityError"/>
-                    <translationTemplate ref="TR.invalidPropertyValueError"/>
-                  </translationTemplates>
-                </TestAssertion>
-              </testAssertions>
-            </TestStep>
-          </testSteps>
-        </TestCase>
-        <TestCase id="EID28b931cd-1c77-43e8-9ac5-aa58e3e64aa9">
-          <label>ISO-Element Nr. 290: format­Distributor</label>
-          <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
-          <parent ref="EIDc473dff3-34cd-457e-9f8a-40dfb5855926"/>
-          <testSteps>
-            <TestStep id="EIDa32637da-1a46-48ef-a2ab-0689348a7785">
-              <label>ISO-Element Nr. 290: format­Distributor</label>
-              <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
-              <parent ref="EID28b931cd-1c77-43e8-9ac5-aa58e3e64aa9"/>
-              <statementForExecution>not applicable</statementForExecution>
-              <testItemType ref="EIDf483e8e8-06b9-4900-ab36-adad0d7f22f0"/>
-              <testAssertions>
-                <TestAssertion id="EID83437dd9-052d-4df2-9907-0699d9e8dd74">
-                  <label>TestAssertion</label>
-                  <description><![CDATA[The property with localName 'formatDistributor' and namespace 'http://www.isotc211.org/2005/gmd' should have a minimum cardinality of 0 and a maximum cardinality of 0]]></description>
-                  <parent ref="EIDa32637da-1a46-48ef-a2ab-0689348a7785"/>
-                  <expectedResult>NOT_APPLICABLE</expectedResult>
-                  <expression>let $messages :=
-  (for $record in $db
-     let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
-     let $typesFound := $record//*[local-name()='MD_Format' and namespace-uri()='http://www.isotc211.org/2005/gmd']
-     for $typeFound in $typesFound 
-       let $propertyCount := count($typeFound/*[local-name()='formatDistributor' and namespace-uri()='http://www.isotc211.org/2005/gmd']) 
-       return
-       if (($propertyCount lt 0) or ($propertyCount gt 0)) then
-        local:addMessage('TR.invalidPropertyCardinalityError', map { 'localName': 'MD_Format', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'invalidCardinality': $propertyCount })
-       else ()
-  )[position() le $limitErrors]
-return
-(if ($messages) then 'FAILED' else 'PASSED',
- local:error-statistics('TR.recordsWithErrors', count(fn:distinct-values($messages//etf:argument[@token='id']/text()))),
- $messages)</expression>
-                  <testItemType ref="EIDb48eeaa3-6a74-414a-879c-1dc708017e11"/>
-                  <translationTemplates>
-                    <translationTemplate ref="TR.recordsWithErrors"/>
-                    <translationTemplate ref="TR.missingTypeContentError"/>
-                    <translationTemplate ref="TR.missingMandatoryTypeError"/>
-                    <translationTemplate ref="TR.invalidPropertyCardinalityError"/>
-                    <translationTemplate ref="TR.invalidPropertyValueError"/>
-                  </translationTemplates>
-                </TestAssertion>
-              </testAssertions>
-            </TestStep>
-          </testSteps>
-        </TestCase>
-      </testCases>
-    </TestModule>
-    <TestModule id="EIDd6e5f248-d9fc-4335-ab38-1db84d75b7a9">
-      <label>CI_Date</label>
-      <description><![CDATA[This is a test module]]></description>
-      <parent ref="EID5d449875-1b39-4e34-8f59-b4d3c4045b06"/>
-      <testCases>
-        <TestCase id="EIDe574156a-0592-4c45-ad9f-ddcd3038114f">
-          <label>ISO-Element Nr. 395: Bedeutung des Datums</label>
-          <description><![CDATA[Pflichtelement in Datumsangaben: die Bedeutung des Datums muss belegt sein.]]></description>
-          <parent ref="EIDd6e5f248-d9fc-4335-ab38-1db84d75b7a9"/>
-          <testSteps>
-            <TestStep id="EID8a26b7c6-61ba-4893-bf8f-89ecd9a59b2b">
-              <label>ISO-Element Nr. 395: Bedeutung des Datums</label>
-              <description><![CDATA[Pflichtelement in Datumsangaben: die Bedeutung des Datums muss belegt sein.]]></description>
-              <parent ref="EIDe574156a-0592-4c45-ad9f-ddcd3038114f"/>
-              <statementForExecution>not applicable</statementForExecution>
-              <testItemType ref="EIDf483e8e8-06b9-4900-ab36-adad0d7f22f0"/>
-              <testAssertions>
-                <TestAssertion id="EID9feb4eee-936c-4757-bf33-7a9952dce123">
-                  <label>TestAssertion</label>
-                  <description><![CDATA[The property with localName 'dateType' and namespace 'http://www.isotc211.org/2005/gmd' should have a value that corresponds to one from the following list: <br><ul><li>creation</li><li>publication</li><li>revision</li></ul>]]></description>
-                  <parent ref="EID8a26b7c6-61ba-4893-bf8f-89ecd9a59b2b"/>
-                  <expectedResult>NOT_APPLICABLE</expectedResult>
-                  <expression>let $codes := ('creation', 'publication', 'revision')
+                  <expression>let $codes := ('restricted', 'unclassified', 'confidential', 'secret', 'topSecret')
 let $messages :=
   (for $record in $db
      let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
-     let $typesFound := $record//*[local-name()='CI_Date' and namespace-uri()='http://www.isotc211.org/2005/gmd']
+     let $typesFound := $record//*[local-name()='MD_SecurityConstraints' and namespace-uri()='http://www.isotc211.org/2005/gmd']
      for $typeFound in $typesFound
-       let $propertyFound := $typeFound/*[local-name()='dateType' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/data(@codeListValue)
+       let $propertyFound := $typeFound/*[local-name()='classification' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/data(@codeListValue)
        return
          if ($propertyFound and not($propertyFound = $codes)) then
-           local:addMessage('TR.invalidPropertyValueError', map { 'localName': 'CI_Date', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'valueFound': $propertyFound, 'propName': 'dateType', 'allowedValues': string-join( $codes, ', ') })
+           local:addMessage('TR.invalidPropertyValueError', map { 'localName': 'MD_SecurityConstraints', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'valueFound': $propertyFound, 'propName': 'classification', 'allowedValues': string-join( $codes, ', ') })
  else ()
   )[position() le $limitErrors]
 return
@@ -407,6 +223,244 @@ return
  local:error-statistics('TR.recordsWithErrors', count(fn:distinct-values($messages//etf:argument[@token='id']/text()))),
  $messages)</expression>
                   <testItemType ref="EIDf0edc596-49d2-48d6-a1a1-1ac581dcde0a"/>
+                  <translationTemplates>
+                    <translationTemplate ref="TR.recordsWithErrors"/>
+                    <translationTemplate ref="TR.missingTypeContentError"/>
+                    <translationTemplate ref="TR.missingMandatoryTypeError"/>
+                    <translationTemplate ref="TR.invalidPropertyCardinalityError"/>
+                    <translationTemplate ref="TR.invalidPropertyValueError"/>
+                  </translationTemplates>
+                </TestAssertion>
+              </testAssertions>
+            </TestStep>
+          </testSteps>
+        </TestCase>
+        <TestCase id="EIDe99f2235-1403-4b99-aab3-c83d89b8701c">
+          <label>ISO-Element Nr. 75: user­Note</label>
+          <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
+          <parent ref="EID3820e845-24ed-49ce-9104-4fa4e6c8b3fe"/>
+          <testSteps>
+            <TestStep id="EID6c06f468-431a-4e7a-b3c7-fb4aa623eacd">
+              <label>ISO-Element Nr. 75: user­Note</label>
+              <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
+              <parent ref="EIDe99f2235-1403-4b99-aab3-c83d89b8701c"/>
+              <statementForExecution>not applicable</statementForExecution>
+              <testItemType ref="EIDf483e8e8-06b9-4900-ab36-adad0d7f22f0"/>
+              <testAssertions>
+                <TestAssertion id="EIDf0750420-fdbe-4b01-b5cf-441517cb9246">
+                  <label>TestAssertion</label>
+                  <description><![CDATA[The property with localName 'userNote' and namespace 'http://www.isotc211.org/2005/gmd' should have a minimum cardinality of 0 and a maximum cardinality of 0]]></description>
+                  <parent ref="EID6c06f468-431a-4e7a-b3c7-fb4aa623eacd"/>
+                  <expectedResult>NOT_APPLICABLE</expectedResult>
+                  <expression>let $messages :=
+  (for $record in $db
+     let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
+     let $typesFound := $record//*[local-name()='MD_SecurityConstraints' and namespace-uri()='http://www.isotc211.org/2005/gmd']
+     for $typeFound in $typesFound 
+       let $propertyCount := count($typeFound/*[local-name()='userNote' and namespace-uri()='http://www.isotc211.org/2005/gmd']) 
+       return
+       if (($propertyCount lt 0) or ($propertyCount gt 0)) then
+        local:addMessage('TR.invalidPropertyCardinalityError', map { 'localName': 'MD_SecurityConstraints', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'invalidCardinality': $propertyCount })
+       else ()
+  )[position() le $limitErrors]
+return
+(if ($messages) then 'FAILED' else 'PASSED',
+ local:error-statistics('TR.recordsWithErrors', count(fn:distinct-values($messages//etf:argument[@token='id']/text()))),
+ $messages)</expression>
+                  <testItemType ref="EIDb48eeaa3-6a74-414a-879c-1dc708017e11"/>
+                  <translationTemplates>
+                    <translationTemplate ref="TR.recordsWithErrors"/>
+                    <translationTemplate ref="TR.missingTypeContentError"/>
+                    <translationTemplate ref="TR.missingMandatoryTypeError"/>
+                    <translationTemplate ref="TR.invalidPropertyCardinalityError"/>
+                    <translationTemplate ref="TR.invalidPropertyValueError"/>
+                  </translationTemplates>
+                </TestAssertion>
+              </testAssertions>
+            </TestStep>
+          </testSteps>
+        </TestCase>
+        <TestCase id="EIDedc88a75-8fa6-47f8-83bf-4f9da6b005ce">
+          <label>ISO-Element Nr. 76: classification­System</label>
+          <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
+          <parent ref="EID3820e845-24ed-49ce-9104-4fa4e6c8b3fe"/>
+          <testSteps>
+            <TestStep id="EID845de312-df25-4ce2-87ea-04c278b51837">
+              <label>ISO-Element Nr. 76: classification­System</label>
+              <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
+              <parent ref="EIDedc88a75-8fa6-47f8-83bf-4f9da6b005ce"/>
+              <statementForExecution>not applicable</statementForExecution>
+              <testItemType ref="EIDf483e8e8-06b9-4900-ab36-adad0d7f22f0"/>
+              <testAssertions>
+                <TestAssertion id="EID774b0734-f227-4a6f-935d-f71d62830e0a">
+                  <label>TestAssertion</label>
+                  <description><![CDATA[The property with localName 'classificationSystem' and namespace 'http://www.isotc211.org/2005/gmd' should have a minimum cardinality of 0 and a maximum cardinality of 0]]></description>
+                  <parent ref="EID845de312-df25-4ce2-87ea-04c278b51837"/>
+                  <expectedResult>NOT_APPLICABLE</expectedResult>
+                  <expression>let $messages :=
+  (for $record in $db
+     let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
+     let $typesFound := $record//*[local-name()='MD_SecurityConstraints' and namespace-uri()='http://www.isotc211.org/2005/gmd']
+     for $typeFound in $typesFound 
+       let $propertyCount := count($typeFound/*[local-name()='classificationSystem' and namespace-uri()='http://www.isotc211.org/2005/gmd']) 
+       return
+       if (($propertyCount lt 0) or ($propertyCount gt 0)) then
+        local:addMessage('TR.invalidPropertyCardinalityError', map { 'localName': 'MD_SecurityConstraints', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'invalidCardinality': $propertyCount })
+       else ()
+  )[position() le $limitErrors]
+return
+(if ($messages) then 'FAILED' else 'PASSED',
+ local:error-statistics('TR.recordsWithErrors', count(fn:distinct-values($messages//etf:argument[@token='id']/text()))),
+ $messages)</expression>
+                  <testItemType ref="EIDb48eeaa3-6a74-414a-879c-1dc708017e11"/>
+                  <translationTemplates>
+                    <translationTemplate ref="TR.recordsWithErrors"/>
+                    <translationTemplate ref="TR.missingTypeContentError"/>
+                    <translationTemplate ref="TR.missingMandatoryTypeError"/>
+                    <translationTemplate ref="TR.invalidPropertyCardinalityError"/>
+                    <translationTemplate ref="TR.invalidPropertyValueError"/>
+                  </translationTemplates>
+                </TestAssertion>
+              </testAssertions>
+            </TestStep>
+          </testSteps>
+        </TestCase>
+        <TestCase id="EID852d9d94-29eb-4b35-9b4e-1dfdf37d73b6">
+          <label>ISO-Element Nr. 77: handling­Description</label>
+          <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
+          <parent ref="EID3820e845-24ed-49ce-9104-4fa4e6c8b3fe"/>
+          <testSteps>
+            <TestStep id="EID40a36d49-dacc-488a-86fd-f025bcd07108">
+              <label>ISO-Element Nr. 77: handling­Description</label>
+              <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
+              <parent ref="EID852d9d94-29eb-4b35-9b4e-1dfdf37d73b6"/>
+              <statementForExecution>not applicable</statementForExecution>
+              <testItemType ref="EIDf483e8e8-06b9-4900-ab36-adad0d7f22f0"/>
+              <testAssertions>
+                <TestAssertion id="EIDb28b84fb-9734-45a5-a8bb-6db9a7eae858">
+                  <label>TestAssertion</label>
+                  <description><![CDATA[The property with localName 'handlingDescription' and namespace 'http://www.isotc211.org/2005/gmd' should have a minimum cardinality of 0 and a maximum cardinality of 0]]></description>
+                  <parent ref="EID40a36d49-dacc-488a-86fd-f025bcd07108"/>
+                  <expectedResult>NOT_APPLICABLE</expectedResult>
+                  <expression>let $messages :=
+  (for $record in $db
+     let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
+     let $typesFound := $record//*[local-name()='MD_SecurityConstraints' and namespace-uri()='http://www.isotc211.org/2005/gmd']
+     for $typeFound in $typesFound 
+       let $propertyCount := count($typeFound/*[local-name()='handlingDescription' and namespace-uri()='http://www.isotc211.org/2005/gmd']) 
+       return
+       if (($propertyCount lt 0) or ($propertyCount gt 0)) then
+        local:addMessage('TR.invalidPropertyCardinalityError', map { 'localName': 'MD_SecurityConstraints', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'invalidCardinality': $propertyCount })
+       else ()
+  )[position() le $limitErrors]
+return
+(if ($messages) then 'FAILED' else 'PASSED',
+ local:error-statistics('TR.recordsWithErrors', count(fn:distinct-values($messages//etf:argument[@token='id']/text()))),
+ $messages)</expression>
+                  <testItemType ref="EIDb48eeaa3-6a74-414a-879c-1dc708017e11"/>
+                  <translationTemplates>
+                    <translationTemplate ref="TR.recordsWithErrors"/>
+                    <translationTemplate ref="TR.missingTypeContentError"/>
+                    <translationTemplate ref="TR.missingMandatoryTypeError"/>
+                    <translationTemplate ref="TR.invalidPropertyCardinalityError"/>
+                    <translationTemplate ref="TR.invalidPropertyValueError"/>
+                  </translationTemplates>
+                </TestAssertion>
+              </testAssertions>
+            </TestStep>
+          </testSteps>
+        </TestCase>
+      </testCases>
+    </TestModule>
+    <TestModule id="EID00bfb32f-84d1-4214-aa90-fffa75ddeefe">
+      <label>MD_FeatureCatalogueDescription</label>
+      <description><![CDATA[This is a test module]]></description>
+      <parent ref="EID5d449875-1b39-4e34-8f59-b4d3c4045b06"/>
+      <testCases/>
+    </TestModule>
+    <TestModule id="EID6891204e-537b-4d8c-8d12-66bd9c24ddbf">
+      <label>MD_Usage</label>
+      <description><![CDATA[This is a test module]]></description>
+      <parent ref="EID5d449875-1b39-4e34-8f59-b4d3c4045b06"/>
+      <testCases>
+        <TestCase id="EID9395ab9f-b4c4-43e1-aac8-5b8f044a02e3">
+          <label>ISO-Element Nr. 64: usage­Date­Time</label>
+          <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
+          <parent ref="EID6891204e-537b-4d8c-8d12-66bd9c24ddbf"/>
+          <testSteps>
+            <TestStep id="EIDb6fccfe9-005e-420f-8c25-e71c6cc98fce">
+              <label>ISO-Element Nr. 64: usage­Date­Time</label>
+              <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
+              <parent ref="EID9395ab9f-b4c4-43e1-aac8-5b8f044a02e3"/>
+              <statementForExecution>not applicable</statementForExecution>
+              <testItemType ref="EIDf483e8e8-06b9-4900-ab36-adad0d7f22f0"/>
+              <testAssertions>
+                <TestAssertion id="EID0cc0144f-b215-485e-a5d7-effc2250e59b">
+                  <label>TestAssertion</label>
+                  <description><![CDATA[The property with localName 'usageDateTime' and namespace 'http://www.isotc211.org/2005/gmd' should have a minimum cardinality of 0 and a maximum cardinality of 0]]></description>
+                  <parent ref="EIDb6fccfe9-005e-420f-8c25-e71c6cc98fce"/>
+                  <expectedResult>NOT_APPLICABLE</expectedResult>
+                  <expression>let $messages :=
+  (for $record in $db
+     let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
+     let $typesFound := $record//*[local-name()='MD_Usage' and namespace-uri()='http://www.isotc211.org/2005/gmd']
+     for $typeFound in $typesFound 
+       let $propertyCount := count($typeFound/*[local-name()='usageDateTime' and namespace-uri()='http://www.isotc211.org/2005/gmd']) 
+       return
+       if (($propertyCount lt 0) or ($propertyCount gt 0)) then
+        local:addMessage('TR.invalidPropertyCardinalityError', map { 'localName': 'MD_Usage', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'invalidCardinality': $propertyCount })
+       else ()
+  )[position() le $limitErrors]
+return
+(if ($messages) then 'FAILED' else 'PASSED',
+ local:error-statistics('TR.recordsWithErrors', count(fn:distinct-values($messages//etf:argument[@token='id']/text()))),
+ $messages)</expression>
+                  <testItemType ref="EIDb48eeaa3-6a74-414a-879c-1dc708017e11"/>
+                  <translationTemplates>
+                    <translationTemplate ref="TR.recordsWithErrors"/>
+                    <translationTemplate ref="TR.missingTypeContentError"/>
+                    <translationTemplate ref="TR.missingMandatoryTypeError"/>
+                    <translationTemplate ref="TR.invalidPropertyCardinalityError"/>
+                    <translationTemplate ref="TR.invalidPropertyValueError"/>
+                  </translationTemplates>
+                </TestAssertion>
+              </testAssertions>
+            </TestStep>
+          </testSteps>
+        </TestCase>
+        <TestCase id="EID727219b1-efa6-4c68-badf-a056fc3439fb">
+          <label>ISO-Element Nr. 65: user­Determined­Limitations</label>
+          <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
+          <parent ref="EID6891204e-537b-4d8c-8d12-66bd9c24ddbf"/>
+          <testSteps>
+            <TestStep id="EID3693ddf8-3b3f-488a-b0b0-c4dc34284c17">
+              <label>ISO-Element Nr. 65: user­Determined­Limitations</label>
+              <description><![CDATA[Das Element ist nicht Bestandteil des NRW-Metadatenprofils.]]></description>
+              <parent ref="EID727219b1-efa6-4c68-badf-a056fc3439fb"/>
+              <statementForExecution>not applicable</statementForExecution>
+              <testItemType ref="EIDf483e8e8-06b9-4900-ab36-adad0d7f22f0"/>
+              <testAssertions>
+                <TestAssertion id="EID51dcf4d3-cd00-4636-861a-214a943d6f4c">
+                  <label>TestAssertion</label>
+                  <description><![CDATA[The property with localName 'userDeterminedLimitations' and namespace 'http://www.isotc211.org/2005/gmd' should have a minimum cardinality of 0 and a maximum cardinality of 0]]></description>
+                  <parent ref="EID3693ddf8-3b3f-488a-b0b0-c4dc34284c17"/>
+                  <expectedResult>NOT_APPLICABLE</expectedResult>
+                  <expression>let $messages :=
+  (for $record in $db
+     let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
+     let $typesFound := $record//*[local-name()='MD_Usage' and namespace-uri()='http://www.isotc211.org/2005/gmd']
+     for $typeFound in $typesFound 
+       let $propertyCount := count($typeFound/*[local-name()='userDeterminedLimitations' and namespace-uri()='http://www.isotc211.org/2005/gmd']) 
+       return
+       if (($propertyCount lt 0) or ($propertyCount gt 0)) then
+        local:addMessage('TR.invalidPropertyCardinalityError', map { 'localName': 'MD_Usage', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'invalidCardinality': $propertyCount })
+       else ()
+  )[position() le $limitErrors]
+return
+(if ($messages) then 'FAILED' else 'PASSED',
+ local:error-statistics('TR.recordsWithErrors', count(fn:distinct-values($messages//etf:argument[@token='id']/text()))),
+ $messages)</expression>
+                  <testItemType ref="EIDb48eeaa3-6a74-414a-879c-1dc708017e11"/>
                   <translationTemplates>
                     <translationTemplate ref="TR.recordsWithErrors"/>
                     <translationTemplate ref="TR.missingTypeContentError"/>
