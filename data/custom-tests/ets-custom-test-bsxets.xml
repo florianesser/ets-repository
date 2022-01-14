@@ -5912,12 +5912,6 @@ return
         </TestCase>
       </testCases>
     </TestModule>
-    <TestModule id="EIDcf86c220-95c0-409b-a480-07066652d321">
-      <label>EX_TemporalExtent</label>
-      <description><![CDATA[This is a test module]]></description>
-      <parent ref="EID5d449875-1b39-4e34-8f59-b4d3c4045b06"/>
-      <testCases/>
-    </TestModule>
     <TestModule id="EID98df27ef-61df-4ba2-8fcb-a711cd391a73">
       <label>MD_Metadata</label>
       <description><![CDATA[This is a test module]]></description>
