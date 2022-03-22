@@ -430,7 +430,7 @@ let $messages :=
      for $typeFound in $typesFound
        let $propertyFound := $typeFound/*[local-name()='level' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/data(@codeListValue)
        return
-         if ($propertyFound and not($propertyFound/*/text() = $codes)) then
+         if ($propertyFound and not($propertyFound = $codes)) then
            local:addMessage('TR.invalidPropertyValueError', map { 'localName': 'DQ_Scope', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'valueFound': $propertyFound/*/text(), 'propName': 'level', 'allowedValues': string-join( $codes, ', ') })
  else ()
   )[position() le $limitErrors]
@@ -2036,7 +2036,7 @@ let $messages :=
      for $typeFound in $typesFound
        let $propertyFound := $typeFound/*[local-name()='hierarchyLevel' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/data(@codeListValue)
        return
-         if ($propertyFound and not($propertyFound/*/text() = $codes)) then
+         if ($propertyFound and not($propertyFound = $codes)) then
            local:addMessage('TR.invalidPropertyValueError', map { 'localName': 'MD_Metadata', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'valueFound': $propertyFound/*/text(), 'propName': 'hierarchyLevel', 'allowedValues': string-join( $codes, ', ') })
  else ()
   )[position() le $limitErrors]
