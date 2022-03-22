@@ -428,7 +428,7 @@ let $messages :=
      let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
      let $typesFound := $record//*[local-name()='DQ_Scope' and namespace-uri()='http://www.isotc211.org/2005/gmd']
      for $typeFound in $typesFound
-       let $propertyFound := $typeFound/*[local-name()='level' and namespace-uri()='http://www.isotc211.org/2005/gmd']*/data(@codeListValue)
+       let $propertyFound := $typeFound/*[local-name()='level' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/data(@codeListValue)
        return
          if ($propertyFound and not($propertyFound/*/text() = $codes)) then
            local:addMessage('TR.invalidPropertyValueError', map { 'localName': 'DQ_Scope', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'valueFound': $propertyFound/*/text(), 'propName': 'level', 'allowedValues': string-join( $codes, ', ') })
@@ -2034,7 +2034,7 @@ let $messages :=
      let $rid := $record//*[local-name()='fileIdentifier' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/text()
      let $typesFound := $record//*[local-name()='MD_Metadata' and namespace-uri()='http://www.isotc211.org/2005/gmd']
      for $typeFound in $typesFound
-       let $propertyFound := $typeFound/*[local-name()='hierarchyLevel' and namespace-uri()='http://www.isotc211.org/2005/gmd']*/data(@codeListValue)
+       let $propertyFound := $typeFound/*[local-name()='hierarchyLevel' and namespace-uri()='http://www.isotc211.org/2005/gmd']/*/data(@codeListValue)
        return
          if ($propertyFound and not($propertyFound/*/text() = $codes)) then
            local:addMessage('TR.invalidPropertyValueError', map { 'localName': 'MD_Metadata', 'namespace': 'http://www.isotc211.org/2005/gmd', 'fileIdentifier': $rid, 'filename': local:filename($record), 'valueFound': $propertyFound/*/text(), 'propName': 'hierarchyLevel', 'allowedValues': string-join( $codes, ', ') })
